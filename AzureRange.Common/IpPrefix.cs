@@ -38,7 +38,7 @@ namespace AzureRange
         public IPPrefix(IpPrefixType type, string RegionOrO365Service, string pStrRawPrefix)
         {
             Type = type;
-            if (type == IpPrefixType.Azure || type == IpPrefixType.AzureChina)
+            if (type == IpPrefixType.Azure || type == IpPrefixType.AzureChina || type == IpPrefixType.AzureGermany)
             {
                 Region = RegionOrO365Service;
                 O365Service = null;

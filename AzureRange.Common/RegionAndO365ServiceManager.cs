@@ -25,8 +25,6 @@ namespace AzureRange.Website
             "europewest,West Europe,Netherlands,52.34226,5.528157,Europe",
             "asiaeast,East Asia,Hong Kong,22.27981,114.1618,Asia",
             "asiasoutheast,Southeast Asia,Singapore,1.321996,103.8205,Asia",
-            "asiaeast,Japan East,Tokyo,35.68993, 139.6918,Asia",
-            "asiasoutheast,Japan West,Osaka,34.67752,135.5129,Asia",
             "brazilsouth,Brazil South,Sao Paulo State,-22.26351,-48.73421,South America",
             "australiaeast,Australia East,New South Wales,-32.16693,147.0125,Autralia",
             "australiasoutheast,Australia Southeast,Victoria,-36.86425,144.3104,Autralia",
@@ -40,7 +38,13 @@ namespace AzureRange.Website
             "uksouth,United Kingdon South,London,51.500152,-1.126236,United Kingdom",
             "ukwest,United Kingdom West,Cardiff,51.481307,-3.180498,United Kingdom",
             "japaneast,Japan East,Tokyo,35.68993,139.6918,Japan",
-            "japanwest,Japan West,Osaka,34.67752,135.5129,Japan"
+            "japanwest,Japan West,Osaka,34.67752,135.5129,Japan",
+            "koreasouth,Korea Central,Busan,35.10278,129.04028,South Korea",
+            "koreacentral,Korea South,Seoul,37.566,126.9784,South Korea",
+            "germanycentral,Germany Central,Frankfurt,50.11552,8.68417,Germany",
+            "germanynortheast,Germany North East,Berlin,52.52437,13.41053,Germany"
+            //"uscentraleuap,Central US,Iowa,42.0747,-93.49997,US Canarie",
+            //"useast2euap,East US 2,Virginia,37.51282,-78.69794,US Canarie"
         };
         /// <summary>
         /// Detailed Service description
