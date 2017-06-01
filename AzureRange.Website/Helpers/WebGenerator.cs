@@ -1,5 +1,7 @@
 ﻿using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
+using System.Security.Cryptography;
+using System.Text;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -92,11 +94,21 @@ namespace AzureRange.Website
         public List<IPPrefix> GetPrefixList(List<string> regionsAndO365Service, bool complement)
         {
             var stopWatch = Stopwatch.StartNew();
+            // create string of all regions and O365 services to hash
+            var unhashedfilename = string.Join(".", regionsAndO365Service.ToArray()) + complement.ToString() + ".txt";
+            // hash it - otherwise temp file name too long
+            var sha256 = new SHA256CryptoServiceProvider();
+            var hashedfilename = new StringBuilder();
+            byte[] byte_hashedfilename = sha256.ComputeHash(Encoding.UTF8.GetBytes(unhashedfilename), 0, Encoding.UTF8.GetByteCount(unhashedfilename));
+
+            foreach (byte theByte in byte_hashedfilename)
+            {
+                hashedfilename.Append(theByte.ToString("x2"));
+            }
+            var filepath = Path.GetTempPath() + hashedfilename.ToString() + ".txt";
 
             var cachedResult = string.Empty;
             List<IPPrefix> result = null;
-
-            var filepath = Path.GetTempPath() + string.Join(".",regionsAndO365Service.ToArray()) + complement.ToString() + ".txt";
 
             if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
                 cachedResult = File.ReadAllText(filepath);
