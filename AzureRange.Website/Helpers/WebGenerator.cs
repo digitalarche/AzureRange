@@ -65,6 +65,7 @@ namespace AzureRange.Website
                 _localList = value;
             }
         }
+
         public List<AzureRegion> GetRegions()
         {
             var jsonRegion = string.Empty;
@@ -89,6 +90,31 @@ namespace AzureRange.Website
 
             }
             return azureRegion;
+        }
+        public List<O365Service> GetO365Services()
+        {
+            var filepath = Path.GetTempPath() + "\\O365Services.txt";
+            var jsonO365Service = string.Empty;
+            List<O365Service> o365Services = new List<O365Service>();
+
+            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
+            {
+                jsonO365Service = File.ReadAllText(filepath);
+            }
+
+            if (!string.IsNullOrEmpty(jsonO365Service))
+            {
+                o365Services = JsonConvert.DeserializeObject<List<O365Service>>(jsonO365Service);
+            }
+            else
+            {
+                var o365serviceList = CachedList.Select(f => f.O365Service).Where(f => !string.IsNullOrWhiteSpace(f)).Distinct().OrderBy(t => t).ToList();
+                var o365Manager = new RegionAndO365ServiceManager();
+                o365Services = o365Manager.GetO365Services(o365serviceList);
+
+                File.WriteAllText(filepath, JsonConvert.SerializeObject(o365Services));
+            }
+            return o365Services;
         }
 
         public List<IPPrefix> GetPrefixList(List<string> regionsAndO365Service, bool complement)
@@ -118,7 +144,7 @@ namespace AzureRange.Website
                 result = JsonConvert.DeserializeObject<List<IPPrefix>>(cachedResult);
             }
             else
-            { 
+            {
                 var localList = (List<IPPrefix>)CachedList.Clone();
 
                 localList.RemoveAll(m => !regionsAndO365Service.Contains(m.Region) && !regionsAndO365Service.Contains(m.O365Service));
@@ -147,30 +173,6 @@ namespace AzureRange.Website
             return result;
         }
 
-        public List<O365Service> GetO365Services()
-        {
-            var filepath = Path.GetTempPath() + "\\O365Services.txt";
-            var jsonO365Service = string.Empty;
-            List<O365Service> o365Services = new List<O365Service>();
 
-            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
-            {
-                jsonO365Service = File.ReadAllText(filepath);
-            }
-
-            if (!string.IsNullOrEmpty(jsonO365Service))
-            {
-                o365Services = JsonConvert.DeserializeObject<List<O365Service>>(jsonO365Service);
-            }
-            else
-            {
-                var o365serviceList = CachedList.Select(f => f.O365Service).Where(f => !string.IsNullOrWhiteSpace(f)).Distinct().OrderBy(t => t).ToList();
-                var o365Manager = new RegionAndO365ServiceManager();
-                o365Services = o365Manager.GetO365Services(o365serviceList);
-
-                File.WriteAllText(filepath, JsonConvert.SerializeObject(o365Services));
-            }
-            return o365Services;
-        }
     }
 }
