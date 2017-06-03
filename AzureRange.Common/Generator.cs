@@ -77,6 +77,59 @@ namespace AzureRange
             return null;
         }
 
+        //public static List<IPPrefix> Summarize(List<IPPrefix> ipPrefixesInput)
+        //{
+            
+        //    // prefix count
+        //    var prefixoutput_run_x = new int();
+        //    var prefixoutput_run_y = new int();
+        //    var summarizedIpPrefixOutput = new List<IPPrefix>();
+
+        //    summarizedIpPrefixOutput = SummarizeHelper(ipPrefixesInput);
+        //    do
+        //    {
+        //        prefixoutput_run_x = summarizedIpPrefixOutput.Count();
+        //        summarizedIpPrefixOutput = SummarizeHelper(summarizedIpPrefixOutput);
+        //        prefixoutput_run_y = summarizedIpPrefixOutput.Count();
+
+        //    } while (prefixoutput_run_x != prefixoutput_run_y);
+        //    return summarizedIpPrefixOutput;
+        //}
+
+        public static List<IPPrefix> Summarize(List<IPPrefix> ipPrefixes)
+        {
+            List<IPPrefix> summarizedPrefixList = new List<IPPrefix>();
+
+            for (var indexCount = 0; indexCount < ipPrefixes.Count(); indexCount++)
+            {
+                // Add current prefix to the list
+                summarizedPrefixList.Add(ipPrefixes.ElementAt(indexCount));
+                if (indexCount < (ipPrefixes.Count()-1))
+                {
+                    if( (ipPrefixes.ElementAt(indexCount).FirstIP ^ ipPrefixes.ElementAt(indexCount+1).FirstIP) == 0 )
+                    {
+                        summarizedPrefixList.Last().Mask = Math.Min(ipPrefixes.ElementAt(indexCount).Mask, ipPrefixes.ElementAt(indexCount + 1).Mask);
+                        indexCount++;
+                    }
+                    if ((ipPrefixes.ElementAt(indexCount).FirstIP ^ ipPrefixes.ElementAt(indexCount + 1).FirstIP) 
+                            == Math.Pow(2,32-ipPrefixes.ElementAt(indexCount).Mask) 
+                            && (ipPrefixes.ElementAt(indexCount).Mask == ipPrefixes.ElementAt(indexCount+1).Mask))
+                            // CAN BE SUMMARIZED!
+                    {
+                        // Modify last added element
+                        summarizedPrefixList.Last().Mask -= 1;                        
+                        indexCount++;
+                    }
+                }
+            }
+            if (ipPrefixes.Count() != summarizedPrefixList.Count())
+                return Summarize(summarizedPrefixList);
+            else
+                return summarizedPrefixList;
+
+        }
+
+
         public static void Dedupe(List<IPPrefix> ipPrefixes)
         {
             var duplicates = new List<IPPrefix>();

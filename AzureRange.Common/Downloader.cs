@@ -25,7 +25,7 @@ namespace AzureRange
             ipPrefixes.AddRange(AddXMLMSInputFileAzure(downloadPageAzureGermanyCloud, IpPrefixType.AzureGermany));
             ipPrefixes.AddRange(AddXMLMSInputFileAzure(downloadPageAzureChinaCloud, IpPrefixType.AzureChina));
             ipPrefixes.AddRange(AddXMLMSInputFileO365(downloadPageO365Cloud));
-            
+
             return ipPrefixes;
         }
         

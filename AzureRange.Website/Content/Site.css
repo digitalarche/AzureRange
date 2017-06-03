@@ -88,6 +88,15 @@ label { font-weight: normal; font-size: 12px}
     vertical-align:central;
 }
 
+.checkbox {
+    text-align: left;
+    width: 320px;
+    margin-left:+27px;
+    /*display: inline-block;*/
+    vertical-align: top;
+}
+
+
 .calculatebuttons{
     /*width:330px;*/
     display:inline-block;

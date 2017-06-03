@@ -13,7 +13,7 @@ function initLoad() {
 
 
 $(document).ready(function () {
-    //To ensure parameters sent to the controler don't include %20%25
+    //To ensure parameters sent to the controler are not encoded URLs (%20...)
     $.ajaxSettings.traditional = true;
 
     window.setTimeout(initLoad, 10);
@@ -47,6 +47,8 @@ $(document).ready(function () {
         calculateComp = true;
         $('#outputformat').children().remove();
         $('#outputformat').append(optComp1, optComp2, optBoth1, optBoth2, optBoth3, optBoth4);
+        $('#summarize-wm').attr('disabled', 'disabled');
+        $('#summarize-wm').prop('checked', false);
     });
 
     // Hide relevant menu options when non complement mode selected
@@ -54,6 +56,8 @@ $(document).ready(function () {
         calculateComp = false;
         $('#outputformat').children().remove();
         $('#outputformat').append(optNComp1, optNComp2, optBoth1, optBoth2, optBoth3, optBoth4);
+        $('#summarize-wm').removeAttr('disabled');
+        //$('#summarize-wm').show();
     });
 
     //Check all regions if clicked
@@ -92,6 +96,8 @@ $(document).ready(function () {
         var Outputformat = $('#outputformat').find('option:selected').val();
         var Region = $('input[name=region]:checked').map(function () { return this.value; }).get();
         var O365svc = $('input[name=o365service]:checked').map(function () { return this.value; }).get();
+        var Summarize = $('#summarize-wm').prop('checked');
+
         // if at least 1 region is selected
         if (Region.length > 0 || O365svc.length > 0) {
             $('#tbox').html("Loading...");
@@ -106,7 +112,7 @@ $(document).ready(function () {
             $('#TextResponse').show(500);
             // show button to hide content
             $('#hideContentButton').show();
-            $.get(Controller, { command: Command, outputformat: Outputformat, region: Region, o365service: O365svc, complement: calculateComp }, function (responseTxt, statusTxt, xhr) {
+            $.get(Controller, { command: Command, outputformat: Outputformat, region: Region, o365service: O365svc, complement: calculateComp, summarize: Summarize }, function (responseTxt, statusTxt, xhr) {
                 if (statusTxt === "success") {
                     $('#IPRangeStats').append(xhr.responseJSON["count"]);
                     $("#tbox").html(xhr.responseJSON["encodedResultString"]);
