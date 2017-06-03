@@ -29,7 +29,6 @@ namespace AzureRange.Website
             _telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
         }
         
-
         public List<IPPrefix> CachedList
         {
             get
@@ -64,6 +63,73 @@ namespace AzureRange.Website
 
                 _localList = value;
             }
+        }
+        public List<IPPrefix> GetPrefixList(List<string> regionsAndO365Service, bool complement, bool summarize)
+        {
+            var stopWatch = Stopwatch.StartNew();
+
+            #region TempFileNameGeneration
+
+            // create string of all regions and O365 services to hash
+            var unhashedfilename = string.Join(".", regionsAndO365Service.ToArray()) + complement.ToString() + summarize.ToString() + ".txt";
+            // hash it - otherwise temp file name too long
+            var sha256 = new SHA256CryptoServiceProvider();
+            var hashedfilename = new StringBuilder();
+            byte[] byte_hashedfilename = sha256.ComputeHash(Encoding.UTF8.GetBytes(unhashedfilename), 0, Encoding.UTF8.GetByteCount(unhashedfilename));
+
+            foreach (byte theByte in byte_hashedfilename)
+            {
+                hashedfilename.Append(theByte.ToString("x2"));
+            }
+            var filepath = Path.GetTempPath() + hashedfilename.ToString() + ".txt";
+
+            #endregion TempFileNameGeneration
+            
+            var cachedResult = string.Empty;
+            List<IPPrefix> result = null;
+
+            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
+                cachedResult = File.ReadAllText(filepath);
+
+            if (!string.IsNullOrEmpty(cachedResult))
+            {
+                result = JsonConvert.DeserializeObject<List<IPPrefix>>(cachedResult);
+            }
+            else
+            {
+                var localList = (List<IPPrefix>)CachedList.Clone();
+
+                localList.RemoveAll(m => !regionsAndO365Service.Contains(m.Region) && !regionsAndO365Service.Contains(m.O365Service));
+
+                // Remove duplicates between Azure and Office 365 regions
+                Generator.Dedupe(localList);
+
+                // Return the complement of Azure Subnets
+                if (complement)
+                {
+                    // Add default subnets - mandatory to exclude 0.0.0.0/8 and class E IP addresses
+                    localList.AddRange(GetDefaultSubnets());
+                    // Calculate the complement and return it
+                    result = Generator.Not(localList);
+                    _telemetry.TrackMetric("GenerateComplement", stopWatch.Elapsed.TotalMilliseconds);
+                }
+                else
+                {
+                    // Generate the list of networks for the region(s) and reorder it for return 
+                    result = localList.OrderBy(r => r.FirstIP).ToList();
+                    _telemetry.TrackMetric("GenerateNoComplement", stopWatch.Elapsed.TotalMilliseconds);
+                }
+
+                // Do we summarize?
+                if (summarize)
+                {
+                    _telemetry.TrackMetric("GenerateSummarized", stopWatch.Elapsed.TotalMilliseconds);
+                    result = Generator.Summarize(result);
+                }
+
+                File.WriteAllText(filepath, JsonConvert.SerializeObject(result));
+            }
+            return result;
         }
 
         public List<AzureRegion> GetRegions()
@@ -117,61 +183,6 @@ namespace AzureRange.Website
             return o365Services;
         }
 
-        public List<IPPrefix> GetPrefixList(List<string> regionsAndO365Service, bool complement)
-        {
-            var stopWatch = Stopwatch.StartNew();
-            // create string of all regions and O365 services to hash
-            var unhashedfilename = string.Join(".", regionsAndO365Service.ToArray()) + complement.ToString() + ".txt";
-            // hash it - otherwise temp file name too long
-            var sha256 = new SHA256CryptoServiceProvider();
-            var hashedfilename = new StringBuilder();
-            byte[] byte_hashedfilename = sha256.ComputeHash(Encoding.UTF8.GetBytes(unhashedfilename), 0, Encoding.UTF8.GetByteCount(unhashedfilename));
-
-            foreach (byte theByte in byte_hashedfilename)
-            {
-                hashedfilename.Append(theByte.ToString("x2"));
-            }
-            var filepath = Path.GetTempPath() + hashedfilename.ToString() + ".txt";
-
-            var cachedResult = string.Empty;
-            List<IPPrefix> result = null;
-
-            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
-                cachedResult = File.ReadAllText(filepath);
-
-            if (!string.IsNullOrEmpty(cachedResult))
-            {
-                result = JsonConvert.DeserializeObject<List<IPPrefix>>(cachedResult);
-            }
-            else
-            {
-                var localList = (List<IPPrefix>)CachedList.Clone();
-
-                localList.RemoveAll(m => !regionsAndO365Service.Contains(m.Region) && !regionsAndO365Service.Contains(m.O365Service));
-
-                // Remove duplicates between Azure and Office 365 regions
-                Generator.Dedupe(localList);
-
-                // Return the complement of Azure Subnets
-                if (complement)
-                {
-                    // Add default subnets - mandatory to exclude 0.0.0.0/8 and class E IP addresses
-                    localList.AddRange(GetDefaultSubnets());
-                    // Calculate the complement and return it
-                    result = Generator.Not(localList);
-                    _telemetry.TrackMetric("GenerateComplement", stopWatch.Elapsed.TotalMilliseconds);
-                }
-                else
-                {
-                    // Generate the list of networks for the region(s) and reorder it for return 
-                    result = localList.OrderBy(r => r.FirstIP).ToList();
-                    _telemetry.TrackMetric("GenerateNoComplement", stopWatch.Elapsed.TotalMilliseconds);
-                }
-
-                File.WriteAllText(filepath, JsonConvert.SerializeObject(result));
-            }
-            return result;
-        }
 
 
     }
