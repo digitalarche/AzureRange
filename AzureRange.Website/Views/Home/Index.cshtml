@@ -31,67 +31,82 @@
     Source code can be found on <a href="https://github.com/fchapleau/AzureRange">GitHub</a>.
 </p>
     </div>
-    <form action="/Download/">
+    
+        <br /><br />
+
 
         <div id="generation">
-        <div id="geographyandserviceselection">
-            @foreach (var geography in regions.Select(r => r.Geography).Distinct().OrderBy(g => g))
-            {
-                <div class="geography">
-                    @*<div class="tableLabel"><input id="chk-@geography" type="checkbox" />&nbsp;@geography</div>*@
-                    <div><span class="tableLabel" chked="false">@geography</span>
-                        @foreach (var region in regions.Where(r => r.Geography == geography).OrderBy(r => r.Name))
-                        {
-                            <div class="region">
-                                <label>
-                                    <input type="checkbox" name="region" value="@region.Id" />&nbsp;@region.Name
-                                </label>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
-            <div class="o365service">
-                <div class="tableLabel">Office 365 Services</div>
-                @foreach (var service in o365services.OrderBy(svc => svc.Name)) 
-                {
-                    <div class="region">
-                        <label>
-                            <input type="checkbox" name="o365service" value="@service.Id" />&nbsp;@service.Name
-                        </label>
-                    </div>
-                }
+        <div id="tabssection">
+            <div class="tab tab-selected" id="tab-geographyandserviceselection">
+                <span>Prefix List Tools</span>
             </div>
-
-            <div id="special-select">
-                <button id="checkAllregion" type = "button">Check All Regions</button>
-                <button id="uncheckAllregion" type = "button">Uncheck All Regions</button>
-                <button id="checkAllO365" type = "button">Check All O365</button>
-                <button id="uncheckAllO365" type = "button">Uncheck All O365</button>
-            </div>
-            <div class="outputformat">
-                <div id="working-mode" class="radiobutton">
-                    <input type="radio" id="non-complement-wm" name="complement" checked/>Generate Prefix List<br />
-                    <input type="radio" id="complement-wm" name="complement" />Generate Complement Prefix List<br />
-                </div>
-                <div class="outputformatlist">
-                    Output format:
-                    <select id="outputformat" name="outputformat" style="width:220px" hidden></select>
-                </div>
-                <div class="checkbox">
-                    <input type="checkbox" id="summarize-wm" name="summarize" />Summarize Prefix List<br />
-                </div>
-            </div>
-            <div class="calculatebuttons">
-                <input type="submit" value="Download Output" />
-                <button id="showContentButton" type = "button">Display Output</button>
-                <button id="hideContentButton" type = "button" hidden>Hide Results</button>
+            <div class="tab tab-nonselected" id="tab-prefixsearchtool">
+                <span>Prefix Search Tools</span>
             </div>
         </div>
+            <form action="/Download/">
+                <div class="window" id="geographyandserviceselection">
+                    @foreach (var geography in regions.Select(r => r.Geography).Distinct().OrderBy(g => g))
+            {
+                        <div class="geography">
+                            @*<div class="tableLabel"><input id="chk-@geography" type="checkbox" />&nbsp;@geography</div>*@
+                            <div>
+                                <span class="tableLabel" chked="false">@geography</span>
+                                @foreach (var region in regions.Where(r => r.Geography == geography).OrderBy(r => r.Name))
+                        {
+                                    <div class="region">
+                                        <label>
+                                            <input type="checkbox" name="region" value="@region.Id" />&nbsp;@region.Name
+                                        </label>
+                                    </div>
+                        }
+                            </div>
+                        </div>
+            }
+                    <div class="o365service">
+                        <div class="tableLabel">Office 365 Services</div>
+                        @foreach (var service in o365services.OrderBy(svc => svc.Name))
+                {
+                            <div class="region">
+                                <label>
+                                    <input type="checkbox" name="o365service" value="@service.Id" />&nbsp;@service.Name
+                                </label>
+                            </div>
+                }
+                    </div>
 
+                    <div id="special-select">
+                        <button id="checkAllregion" type="button">Check All Regions</button>
+                        <button id="uncheckAllregion" type="button">Uncheck All Regions</button>
+                        <button id="checkAllO365" type="button">Check All O365</button>
+                        <button id="uncheckAllO365" type="button">Uncheck All O365</button>
+                    </div>
+                    <div class="outputformat">
+                        <div id="working-mode" class="radiobutton">
+                            <input type="radio" id="non-complement-wm" name="complement" checked />Generate Prefix List<br />
+                            <input type="radio" id="complement-wm" name="complement" />Generate Complement Prefix List<br />
+                        </div>
+                        <div class="outputformatlist">
+                            Output format:
+                            <select id="outputformat" name="outputformat" style="width:220px" hidden></select>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="summarize-wm" name="summarize" />Summarize Prefix List<br />
+                        </div>
+                    </div>
+                    <div class="calculatebuttons">
+                        <input type="submit" value="Download Output" />
+                        <button id="showContentButton" type="button">Display Output</button>
+                        <button id="hideContentButton" type="button" hidden>Hide Results</button>
+                    </div>
+                </div>
+            </form>
+        <div id="prefixsearchtool" class="window" hidden>
+            <input id="searchedIP" type="text" value="0.0.0.0" />
+            <button id="findPrefix" type="button">Find</button>
+        </div>
         <p></p>
     </div>
-    </form>
     <div id="TextResponse" hidden>
         <p></p>
         <p id="IPRangeStats">...</p>
