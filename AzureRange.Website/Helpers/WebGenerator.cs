@@ -38,7 +38,7 @@ namespace AzureRange.Website
                 
                 // Validate if ranges already exists and is recent enough (should be updated by WebJob)
                 var filepath = Path.GetTempPath() + "\\ranges.txt";
-                if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
+                if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 1)
                     jsonIpPrefixList = File.ReadAllText(filepath);
 
                 if (!string.IsNullOrEmpty(jsonIpPrefixList))
@@ -137,7 +137,7 @@ namespace AzureRange.Website
             
             var filepath = Path.GetTempPath() + "\\AzureRegions.txt";
 
-            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
+            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 1)
                 jsonRegion = File.ReadAllText(filepath);
 
             if (!string.IsNullOrEmpty(jsonRegion))
@@ -161,7 +161,7 @@ namespace AzureRange.Website
             var jsonO365Service = string.Empty;
             List<O365Service> o365Services = new List<O365Service>();
 
-            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
+            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 1)
             {
                 jsonO365Service = File.ReadAllText(filepath);
             }

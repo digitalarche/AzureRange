@@ -28,7 +28,6 @@ namespace AzureRange
 
             return ipPrefixes;
         }
-        
         private static List<IPPrefix> AddXMLMSInputFileAzure(string downloadURL, IpPrefixType type)
         {
             string dlUrl = string.Empty;
