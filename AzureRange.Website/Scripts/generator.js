@@ -20,6 +20,34 @@ $(document).ready(function () {
     $('#complement-wm').trigger("click");
     $('#outputformat').show();
 
+    $('.tab').click(function () {
+        // If click on one of the service tabs
+        // check if the tab is already selected
+        if ($(this).attr('class')==="tab-selected")
+        {
+            //alert('selected tab!');
+            // do nothing - just clicked selected tab
+        }
+        else
+        {
+            //alert('unselected tab!');
+            // deselect other guys
+            $(".tab-selected").addClass("tab-nonselected").removeClass("tab-selected");
+            $(this).addClass("tab-selected").removeClass("tab-nonselected");
+            // make dissapear other tab
+            $(".window").hide();
+            //$("#geographyandserviceselection").hide();
+            // Find section name to show
+            var sectionname = $(this).attr("id");
+            sectionname = sectionname.substring(4, sectionname.length);
+            // make appear new tab
+            $("#" + sectionname).show();
+            $('#tbox').html = "";
+            
+            $('#TextResponse').hide();
+        }
+    });
+
     $('.tableLabel').click(function () {
         // Toggle regions selected
         if ($(this).attr('chked') !== "true")
@@ -109,7 +137,9 @@ $(document).ready(function () {
                     $('#IPRangeStats').text("Number of prefixes found ... : ");
                     break;
             }
+            $('#IPRangeStats').show();
             $('#TextResponse').show(500);
+            $('#tbox').height(300);
             // show button to hide content
             $('#hideContentButton').show();
             $.get(Controller, { command: Command, outputformat: Outputformat, region: Region, o365service: O365svc, complement: calculateComp, summarize: Summarize }, function (responseTxt, statusTxt, xhr) {
@@ -118,13 +148,31 @@ $(document).ready(function () {
                     $("#tbox").html(xhr.responseJSON["encodedResultString"]);
                 }
                 if (statusTxt === "Error")
-                    $("#tbox").html("Error fetching the data!" + xhr.statusTxt);
+                    $("#tbox").html("Error fetching the data! " + xhr.statusTxt);
             });
         }
         else
             alert("No Region or Office 365 Service Selected.");
     });
 
+    $('#findPrefix').click(function () {
+        var Controller = 'api/FindPrefix';
+        var InputIP = $("#searchedIP").val();
+        $('#TextResponse').show(500);
+        $('#IPRangeStats').hide();
+        $("#tbox").height(30);
+        $('#tbox').show();
+        $('#tbox').html("Fetching...");
+        $.get(Controller, { inputIP: InputIP }, function (responseTxt, statusTxt, xhr) {
+            if (statusTxt === "success") {
+                $('#tbox').html(xhr.responseJSON[0]);
+            }
+            if (statusTxt === "Error") {
+                $('#tbox').html("Error fetching the data! " + hhr.statusTxt);
+            }
+        });
+
+    });
     //DownloadButton - code to be removed
     //$('#downloadContentButton').click(function () {
     //    var Controller = 'download';

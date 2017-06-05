@@ -14,6 +14,7 @@ namespace AzureRange.Website.Controllers
         public IHttpActionResult Get([FromUri] string[] region, [FromUri] string[] o365service, string outputformat, bool complement = false, bool summarize = false)
         {
             int resultCount;
+            // validate if proprer region or o365 service (for hacking... not to break service);
             var resultString = GenerationHelper.Generate(region, o365service, outputformat, complement, summarize, out resultCount);
             return Json(new { count = resultCount, encodedResultString = WebUtility.HtmlEncode(resultString) });
         }

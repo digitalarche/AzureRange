@@ -23,12 +23,10 @@ namespace AzureRange.Website
             ipPPrefixesInput.Add(new IPPrefix("224.0.0.0/3"));
             return ipPPrefixesInput;
         }
-
         public WebGenerator()
         {
             _telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
         }
-        
         public List<IPPrefix> CachedList
         {
             get
@@ -37,9 +35,10 @@ namespace AzureRange.Website
                     return _localList;
 
                 var jsonIpPrefixList = string.Empty;
-
+                
+                // Validate if ranges already exists and is recent enough (should be updated by WebJob)
                 var filepath = Path.GetTempPath() + "\\ranges.txt";
-                if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
+                if (File.Exists(filepath) && (DateTime.Now - File.GetLastWriteTime(filepath)).TotalHours < 1)
                     jsonIpPrefixList = File.ReadAllText(filepath);
 
                 if (!string.IsNullOrEmpty(jsonIpPrefixList))
@@ -131,7 +130,6 @@ namespace AzureRange.Website
             }
             return result;
         }
-
         public List<AzureRegion> GetRegions()
         {
             var jsonRegion = string.Empty;
@@ -139,7 +137,7 @@ namespace AzureRange.Website
             
             var filepath = Path.GetTempPath() + "\\AzureRegions.txt";
 
-            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
+            if (File.Exists(filepath) && (DateTime.Now - File.GetLastWriteTime(filepath)).TotalHours < 1)
                 jsonRegion = File.ReadAllText(filepath);
 
             if (!string.IsNullOrEmpty(jsonRegion))
@@ -163,7 +161,7 @@ namespace AzureRange.Website
             var jsonO365Service = string.Empty;
             List<O365Service> o365Services = new List<O365Service>();
 
-            if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
+            if (File.Exists(filepath) && (DateTime.Now - File.GetLastWriteTime(filepath)).TotalHours < 1)
             {
                 jsonO365Service = File.ReadAllText(filepath);
             }

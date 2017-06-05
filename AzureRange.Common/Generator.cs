@@ -76,26 +76,6 @@ namespace AzureRange
 
             return null;
         }
-
-        //public static List<IPPrefix> Summarize(List<IPPrefix> ipPrefixesInput)
-        //{
-            
-        //    // prefix count
-        //    var prefixoutput_run_x = new int();
-        //    var prefixoutput_run_y = new int();
-        //    var summarizedIpPrefixOutput = new List<IPPrefix>();
-
-        //    summarizedIpPrefixOutput = SummarizeHelper(ipPrefixesInput);
-        //    do
-        //    {
-        //        prefixoutput_run_x = summarizedIpPrefixOutput.Count();
-        //        summarizedIpPrefixOutput = SummarizeHelper(summarizedIpPrefixOutput);
-        //        prefixoutput_run_y = summarizedIpPrefixOutput.Count();
-
-        //    } while (prefixoutput_run_x != prefixoutput_run_y);
-        //    return summarizedIpPrefixOutput;
-        //}
-
         public static List<IPPrefix> Summarize(List<IPPrefix> ipPrefixes)
         {
             List<IPPrefix> summarizedPrefixList = new List<IPPrefix>();
@@ -128,8 +108,26 @@ namespace AzureRange
                 return summarizedPrefixList;
 
         }
+        public static IPPrefix GetContainingPrefix(IPPrefix p_Prefix,List<IPPrefix> ipPrefixList)
+        {
+            // Function used to look for which prefix in the list contains the prefix in parameter
+            // input :  p_prefix : /32 prefix we're looking for
+            //          ipPrefixList : list of prefixes for the lookup, ordered in numeric order
+            // output : prefix containing p_prefix
+            var resultPrefix = new IPPrefix();
 
-
+            // Look in each prefix of the list
+            foreach(var indexPrefix in ipPrefixList)
+            {
+                // see if our prefix is in between that list
+                if ((indexPrefix.FirstIP <= p_Prefix.FirstIP) & (indexPrefix.LastIP >= p_Prefix.LastIP))
+                {
+                    resultPrefix = indexPrefix;
+                    return resultPrefix;
+                }
+            }
+            return null;
+        }
         public static void Dedupe(List<IPPrefix> ipPrefixes)
         {
             var duplicates = new List<IPPrefix>();
