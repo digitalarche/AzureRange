@@ -29,30 +29,6 @@ namespace AzureRange
             return ipPrefixes;
         }
         
-        //public static void Merge(List<IPPrefix> ipPrefixes)
-        //{
-        //    var duplicates = new List<IPPrefix>();
-        //    IPPrefix previousRange = null;
-        //    foreach (var range in ipPrefixes.OrderBy(t => t.FirstIP))
-        //    {
-        //        if (previousRange != null)
-        //        {
-        //            if (range.FirstIP >= previousRange.FirstIP
-        //                &&
-        //                range.LastIP > previousRange.LastIP)
-        //            {
-        //                previousRange.LastIP = range.LastIP;
-        //                duplicates.Add(range);
-        //            }
-        //        }
-        //        previousRange = range;
-        //    }
-
-        //    duplicates.ForEach(ipToRemove => ipPrefixes.Remove(ipToRemove));
-        //}
-
-        
-
         private static List<IPPrefix> AddXMLMSInputFileAzure(string downloadURL, IpPrefixType type)
         {
             string dlUrl = string.Empty;

@@ -23,12 +23,10 @@ namespace AzureRange.Website
             ipPPrefixesInput.Add(new IPPrefix("224.0.0.0/3"));
             return ipPPrefixesInput;
         }
-
         public WebGenerator()
         {
             _telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
         }
-        
         public List<IPPrefix> CachedList
         {
             get
@@ -37,7 +35,8 @@ namespace AzureRange.Website
                     return _localList;
 
                 var jsonIpPrefixList = string.Empty;
-
+                
+                // Validate if ranges already exists and is recent enough (should be updated by WebJob)
                 var filepath = Path.GetTempPath() + "\\ranges.txt";
                 if (File.Exists(filepath) && (DateTime.Now - File.GetCreationTime(filepath)).TotalHours < 8)
                     jsonIpPrefixList = File.ReadAllText(filepath);
@@ -131,7 +130,6 @@ namespace AzureRange.Website
             }
             return result;
         }
-
         public List<AzureRegion> GetRegions()
         {
             var jsonRegion = string.Empty;

@@ -43,6 +43,7 @@ $(document).ready(function () {
             // make appear new tab
             $("#" + sectionname).show();
             $('#tbox').html = "";
+            
             $('#TextResponse').hide();
         }
     });
@@ -136,6 +137,7 @@ $(document).ready(function () {
                     $('#IPRangeStats').text("Number of prefixes found ... : ");
                     break;
             }
+            $('#IPRangeStats').show();
             $('#TextResponse').show(500);
             $('#tbox').height(300);
             // show button to hide content
@@ -157,6 +159,7 @@ $(document).ready(function () {
         var Controller = 'api/FindPrefix';
         var InputIP = $("#searchedIP").val();
         $('#TextResponse').show(500);
+        $('#IPRangeStats').hide();
         $("#tbox").height(30);
         $('#tbox').show();
         $('#tbox').html("Fetching...");

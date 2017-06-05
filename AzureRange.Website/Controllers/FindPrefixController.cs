@@ -31,11 +31,11 @@ namespace AzureRange.Website.Controllers
                 {
                     string prefixLocation;
                     if (outputPrefix.Region != null)
-                        prefixLocation = outputPrefix.Region;
+                        prefixLocation = " in region" + outputPrefix.Region;
                     else
-                        prefixLocation = outputPrefix.O365Service;
+                        prefixLocation = " in service " + outputPrefix.O365Service;
 
-                    resultstring = ("Found " + inputPrefix.ToString() + " in " + outputPrefix.ToString() + " in region " + prefixLocation);
+                    resultstring = ("Found " + inputPrefix.ToString() + " in " + outputPrefix.ToString() + prefixLocation);
                 }
                 else resultstring = ("Prefix not found.");
                 return new string[] { resultstring };
