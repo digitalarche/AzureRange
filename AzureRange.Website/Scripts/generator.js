@@ -20,6 +20,7 @@ $(document).ready(function () {
     $('#complement-wm').trigger("click");
     $('#outputformat').show();
 
+    // Tabulation changes!
     $('.tab').click(function () {
         // If click on one of the service tabs
         // check if the tab is already selected
@@ -36,15 +37,17 @@ $(document).ready(function () {
             $(this).addClass("tab-selected").removeClass("tab-nonselected");
             // make dissapear other tab
             $(".window").hide();
-            //$("#geographyandserviceselection").hide();
             // Find section name to show
             var sectionname = $(this).attr("id");
             sectionname = sectionname.substring(4, sectionname.length);
             // make appear new tab
             $("#" + sectionname).show();
             $('#tbox').html = "";
-            
             $('#TextResponse').hide();
+            // Hide comments for hidden tab
+            $(".backgroundText").hide();
+            // Show comments for selected tab
+            $(".comment-" + sectionname).show();
         }
     });
 
