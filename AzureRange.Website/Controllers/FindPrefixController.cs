@@ -45,9 +45,9 @@ namespace AzureRange.Website.Controllers
                 }
                 return new string[] { resultstring };
             }
-            catch
+            catch (Exception ex)
             {
-                return new string[] { "Invalid IP address or hostname." };
+                return new string[] { "Invalid IP address or hostname : " + ex.Message  };
             }
             
         }
