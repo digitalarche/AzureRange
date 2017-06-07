@@ -91,6 +91,22 @@ $(document).ready(function () {
         //$('#summarize-wm').show();
     });
 
+    $('.neverTouched').focus(function () {
+        // check if box has been checked
+        if ($(this).hasClass("neverTouched")) {
+            // clear text content
+            $(this).val("");
+            $(this).removeClass("neverTouched");
+        }
+    });
+
+    $('#searchedIP').keypress(function (e) {
+        if (e.keyCode == 13)
+        {
+            $('#findPrefix').click();
+        }
+    });
+
     //Check all regions if clicked
     $('#checkAllregion').click(function () {
         $("input[name=region]").prop('checked', true);
@@ -163,7 +179,7 @@ $(document).ready(function () {
         var InputIP = $("#searchedIP").val();
         $('#TextResponse').show(500);
         $('#IPRangeStats').hide();
-        $("#tbox").height(30);
+        $("#tbox").height(100);
         $('#tbox').show();
         $('#tbox').html("Fetching...");
         $.get(Controller, { inputIP: InputIP }, function (responseTxt, statusTxt, xhr) {

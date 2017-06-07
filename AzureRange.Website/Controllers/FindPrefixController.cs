@@ -13,37 +13,43 @@ namespace AzureRange.Website.Controllers
         // GET api/<controller>
         public IEnumerable<string> Get([FromUri] string inputIP)
         {
-            // Validate if it's a valid IP address (jquery validated but API calls could come from elsewhere...)
-            string ipPattern = @"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b";
 
-            // Create an instance of System.Text.RegularExpressions.Regex
-
-            bool isIPValid = Regex.IsMatch(inputIP, ipPattern);
-
-            if (isIPValid)
+            try
             {
-                var inputPrefix = new IPPrefix(inputIP + "/32");
-                var outputPrefix = new IPPrefix();
-                outputPrefix = FindPrefixHelper.FindPrefix(inputPrefix);
-                string resultstring = String.Empty;
+                // try to resolve the IP address
+                IPAddress[] ipAddList = Dns.GetHostAddresses(inputIP);
 
-                if (outputPrefix != null)
+                // String to build output
+                var resultstring = inputIP + " resolves to ..." + System.Environment.NewLine;
+                // Look for each IP under the hostname...
+                foreach (var ipAdd in ipAddList)
                 {
-                    string prefixLocation;
-                    if (outputPrefix.Region != null)
-                        prefixLocation = " in region" + outputPrefix.Region;
-                    else
-                        prefixLocation = " in service " + outputPrefix.O365Service;
+                    var inputPrefix = new IPPrefix(ipAdd.ToString() + "/32");
+                    var outputPrefix = FindPrefixHelper.FindPrefix(inputPrefix);
 
-                    resultstring = ("Found " + inputPrefix.ToString() + " in " + outputPrefix.ToString() + prefixLocation);
+                    if (outputPrefix != null)
+                    {
+                        string prefixLocation = string.Empty;
+                        // Check if it's part of an Azure region or O365 service
+                        if (outputPrefix.Region != null)
+                            prefixLocation = " in region " + outputPrefix.Region;
+                        else
+                            prefixLocation = " in Office 365 service " + outputPrefix.O365Service;
+
+                        //Build the string result
+                        resultstring += (inputPrefix.ToString() + " is part of " + outputPrefix.ToString() + prefixLocation + System.Environment.NewLine);
+                    }
+                    else
+                        resultstring += (inputPrefix.ToString() + " but isn't part of our prefix lists." + System.Environment.NewLine);
+
                 }
-                else resultstring = ("Prefix not found.");
                 return new string[] { resultstring };
             }
-            else
+            catch
             {
-                return new string[] { "Invalid IP address." };
+                return new string[] { "Invalid IP address or hostname." };
             }
+            
         }
     }
 }

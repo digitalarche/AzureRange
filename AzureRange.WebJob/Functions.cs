@@ -20,36 +20,24 @@ namespace AzureRange.WebJob
             var webGen = new WebGenerator();
             var prefixList = new List<IPPrefix>();
 
-            // Delete files...
+            // Delete temp files...
             var filepath = Path.GetTempPath() + "\\ranges.txt";
-            try
+            if (File.Exists(filepath))
             {
                 File.Delete(filepath);
                 Console.WriteLine("Deleted " + filepath + " succesfully");
-            }
-            catch
-            {
-                Console.WriteLine("Error deleting " + filepath);
             }
             filepath = Path.GetTempPath() + "\\AzureRegions.txt";
-            try
+            if (File.Exists(filepath))
             {
                 File.Delete(filepath);
                 Console.WriteLine("Deleted " + filepath + " succesfully");
-            }
-            catch
-            {
-                Console.WriteLine("Error deleting " + filepath);
             }
             filepath = Path.GetTempPath() + "\\O365Services.txt";
-            try
+            if (File.Exists(filepath))
             {
                 File.Delete(filepath);
                 Console.WriteLine("Deleted " + filepath + " succesfully");
-            }
-            catch
-            {
-                Console.WriteLine("Error deleting " + filepath);
             }
             // retrieves, downloads and save the prefix list on temp storage (local disk)
             Console.WriteLine("Retreiving prefixes...");

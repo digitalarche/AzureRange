@@ -103,6 +103,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\AzureRangeWebsite - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\AzureRangeWebsite-dev - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\AzureRangeWebsite-webjob - Web Deploy.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />
   </ItemGroup>
