@@ -1,7 +1,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/9y5ip9k042g3ce5a/branch/master?svg=true)](https://ci.appveyor.com/project/fchapleau/azurerange/branch/master)
 
 # AzureRange
-Generates Complementary Subnets of Azure Datacenter IP Ranges. Live site is at http://azurerange.azurewebsites.net
+Generates Complementary Subnets of Azure Datacenter IP Ranges. Live site is at http://iprange.omartin2010.com
 
 #Current Features
 >- Creating a list of prefixes to advertise to Azure to mimic forced tunneling by excluding a set of IPs that are already accessible directly from inside the Microsoft Azure Cloud.
